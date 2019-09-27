@@ -1,0 +1,16 @@
+.navbar{
+	background-color: lightcoral;
+	border-radius: 50px;
+	display:flex;
+	flex-direction: row;
+	justify-content: space-around;
+	align-items: baseline;
+	p{
+		margin:10px;
+	}
+	p:hover{
+		color:white;
+		text-decoration: underline;
+		cursor:pointer;
+	}
+}
