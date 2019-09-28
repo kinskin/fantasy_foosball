@@ -17,7 +17,22 @@ class Register extends React.Component{
             secondPlayerFirstName: '',
             secondPlayerLastName: '',
             firstPlayerInput: false,
-            secondPlayerInput: false
+            secondPlayerInput: false,
+            currentTeam: []
+        }
+    }
+
+    componentDidMount(){
+        let value = JSON.parse(localStorage.getItem('team'))
+        if(value === null || value === undefined){
+            this.setState({currentTeam: []},()=>{
+                console.log(this.state.currentTeam)
+            })
+        }
+        else{
+            this.setState({currentTeam: value},()=>{
+                console.log(this.state.currentTeam)
+            })
         }
     }
 
@@ -28,7 +43,7 @@ class Register extends React.Component{
             this.setState({teamName: event.target.value, firstPlayerInput: true})
         }
         else{
-            this.setState({teamName: event.target.value, firstPlayerInput: false, firstPlayerFirstName: '', firstPlayerFirstName: '', secondPlayerInput: false, secondPlayerFirstName: '', secondPlayerLastName: ''})
+            this.setState({teamName: event.target.value, firstPlayerInput: false, firstPlayerFirstName: '', firstPlayerLastName: '', secondPlayerInput: false, secondPlayerFirstName: '', secondPlayerLastName: ''})
         }
     }
 
@@ -63,15 +78,28 @@ class Register extends React.Component{
         this.setState({teamName: '' , firstPlayerFirstName: '', firstPlayerLastName: '', secondPlayerFirstName: '', secondPlayerLastName: '',firstPlayerInput: false, secondPlayerInput: false })
     }
 
-    handleSubmit(){
+    handlePlayerRegister(){
         let teamName = this.state.teamName
         let firstPlayerFirstName = this.state.firstPlayerFirstName
         let firstPlayerLastName = this.state.firstPlayerLastName
         let secondPlayerFirstName = this.state.secondPlayerFirstName
         let secondPlayerLastName = this.state.secondPlayerLastName
-        console.log('this is the team name: ', teamName)
-        console.log('this is the first player name: '+ firstPlayerFirstName+' '+ firstPlayerLastName)
-        console.log('this is the second player name: '+ secondPlayerFirstName+' '+ secondPlayerLastName)
+        let currentTeam = this.state.currentTeam
+        let teamData = {
+            teamName: teamName,
+            firstPlayer:{
+                firstName: firstPlayerFirstName,
+                lastName: firstPlayerLastName
+            },
+            secondPlayer:{
+                firstName: secondPlayerFirstName,
+                lastName: secondPlayerLastName
+            }
+        }
+        currentTeam.push(teamData)
+        this.setState({currentTeam: currentTeam, teamName: '' , firstPlayerFirstName: '', firstPlayerLastName: '', secondPlayerFirstName: '', secondPlayerLastName: '',firstPlayerInput: false, secondPlayerInput: false },()=>{
+            localStorage.setItem('team', JSON.stringify(this.state.currentTeam))
+        })
     }
 
     render(){
@@ -120,7 +148,7 @@ class Register extends React.Component{
                                 {showButton}
                                 <div className='my-4 d-flex flex-row justify-content-around align-items-center'>
                                     <button className='btn btn-md btn-outline-danger' onClick={()=>{this.handleClearInput()}}>clear</button>
-                                    <button className='btn btn-md btn-outline-success' onClick={()=>{this.handleSubmit()}}>Register</button>
+                                    <button className='btn btn-md btn-outline-success' onClick={()=>{this.handlePlayerRegister()}}>Register</button>
                                 </div>
                             </div>
                         </div>

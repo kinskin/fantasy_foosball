@@ -49,8 +49,6 @@ class App extends React.Component {
         this.setState({viewHome: false, viewRegistration: false, viewScoreboard: false, viewLineup: false, viewCurrentGame: true})
     }
 
-
-
     render() {
 
         let content;
