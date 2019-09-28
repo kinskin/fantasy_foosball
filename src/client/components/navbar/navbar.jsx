@@ -3,6 +3,11 @@ import Style from './style.scss'
 
 class Navbar extends React.Component{
 
+
+    handleHome(){
+        this.props.handleHome(true)
+    }
+
     handleRegister(){
         this.props.handleRegister(true);
     }
@@ -24,6 +29,8 @@ class Navbar extends React.Component{
 
         return(
             <div className={Style.navbar}>
+                <p className='btn btn-md' onClick={()=>{this.handleHome()}}>Home</p>
+                ||
                 <p className='btn btn-md' onClick={()=>{this.handleViewScoreboard()}}>Scoreboard</p>
                 ||
                 <p className='btn btn-md' onClick={()=>{this.handleViewCurrentGame()}}>Current game</p>

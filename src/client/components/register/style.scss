@@ -1,0 +1,21 @@
+.contentHeader{
+	border-bottom: 2px solid black;
+	p{
+		font-size: 30px
+	}
+}
+.contentBody{
+	margin:20px 0;
+	.teamHeader{
+		p{
+			font-size: 20px;
+			border-bottom: 1px solid black;
+		}
+		.playerName{
+			margin: 20px 0;
+			p{
+				border-bottom: 1px solid black;
+			}
+		}
+	}
+}
