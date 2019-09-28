@@ -1,8 +1,11 @@
 import React, {Fragment}from 'react';
 import Style from './style.scss';
+import shuffle from 'shuffle-array';
 
 import First from './first/firstplayer.jsx';
 import Second from './second/secondplayer.jsx';
+import Regteam from './regteam/regteam.jsx';
+
 
 class Register extends React.Component{
 
@@ -31,20 +34,21 @@ class Register extends React.Component{
         }
         else{
             this.setState({currentTeam: value},()=>{
-                console.log(this.state.currentTeam)
+                console.log(shuffle(this.state.currentTeam))
             })
         }
     }
 
     eventTeamHandler(event){
         let teamName = this.state.teamName
-        this.setState({teamName: event.target.value})
-        if(teamName.length > 5){
-            this.setState({teamName: event.target.value, firstPlayerInput: true})
-        }
-        else{
-            this.setState({teamName: event.target.value, firstPlayerInput: false, firstPlayerFirstName: '', firstPlayerLastName: '', secondPlayerInput: false, secondPlayerFirstName: '', secondPlayerLastName: ''})
-        }
+        this.setState({teamName: event.target.value},()=>{
+            if(teamName.length > 5){
+                this.setState({firstPlayerInput: true})
+            }
+            else{
+                this.setState({firstPlayerInput: false, firstPlayerFirstName: '', firstPlayerLastName: '', secondPlayerInput: false, secondPlayerFirstName: '', secondPlayerLastName: ''})
+            }
+        })
     }
 
     inputFirstPlayerFirstName(firstName){
@@ -106,6 +110,7 @@ class Register extends React.Component{
 
         let showPlayerInput
         let showButton;
+        let submitButton;
         if(this.state.firstPlayerInput === true && this.state.secondPlayerInput === false){
             showPlayerInput = <First
                                     firstPlayerFirstName={this.state.firstPlayerFirstName}
@@ -114,6 +119,7 @@ class Register extends React.Component{
                                     inputFirstPlayerLastName={(lastName)=>{this.inputFirstPlayerLastName(lastName)}}>
                                 </First>
             showButton = <button className='btn btn-md btn-outline-primary' onClick={()=>{this.showSecondPlayInput()}}>Add Second Player</button>
+            submitButton = <button className='btn btn-md btn-outline-success' onClick={()=>{this.handlePlayerRegister()}}>Register</button>
         }
         else if(this.state.firstPlayerInput === true && this.state.secondPlayerInput === true){
             showPlayerInput =   <Fragment>
@@ -131,6 +137,7 @@ class Register extends React.Component{
                                     </Second>
                                 </Fragment>
             showButton = <button className='btn btn-md btn-outline-primary' onClick={()=>{this.showSecondPlayInput()}}>Remove Second Player</button>
+            submitButton = <button className='btn btn-md btn-outline-success' onClick={()=>{this.handlePlayerRegister()}}>Register</button>
         }
 
         return(
@@ -140,20 +147,26 @@ class Register extends React.Component{
                 </div>
                 <div className={Style.contentBody}>
                     <div className='row'>
-                        <div className={Style.teamHeader+ ' col-4'}>
-                            <p> Register team </p>
+                        <div className='col-4'>
+                            <div className={Style.teamHeader}>
+                                <p> Register team </p>
+                            </div>
                             <div className='card-body form-group'>
                                 Team name: <input className='form-control' onChange={(event)=>{this.eventTeamHandler(event)}} value={this.state.teamName}/>
+                                <small>Enter at least 6 character</small>
                                 {showPlayerInput}
                                 {showButton}
                                 <div className='my-4 d-flex flex-row justify-content-around align-items-center'>
                                     <button className='btn btn-md btn-outline-danger' onClick={()=>{this.handleClearInput()}}>clear</button>
-                                    <button className='btn btn-md btn-outline-success' onClick={()=>{this.handlePlayerRegister()}}>Register</button>
+                                    {submitButton}
                                 </div>
                             </div>
                         </div>
-                        <div className={Style.teamHeader+ ' col-8'}>
-                            <p> Teams </p>
+                        <div className='col-8'>
+                            <div className={Style.teamHeader}>
+                                <p> Teams </p>
+                            </div>
+                            <Regteam currentTeam={this.state.currentTeam}/>
                         </div>
                     </div>
                 </div>
