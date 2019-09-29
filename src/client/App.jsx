@@ -20,7 +20,8 @@ class App extends React.Component {
             viewRegistration: false,
             viewScoreboard: false,
             viewLineup: false,
-            viewCurrentGame: false
+            viewCurrentGame: false,
+            initialize: false
         };
     }
 
@@ -49,6 +50,10 @@ class App extends React.Component {
         this.setState({viewHome: false, viewRegistration: false, viewScoreboard: false, viewLineup: false, viewCurrentGame: true})
     }
 
+    handleInitialize(initializeStatus){
+        this.setState({initialize: initializeStatus})
+    }
+
     render() {
 
         let content;
@@ -56,13 +61,13 @@ class App extends React.Component {
             content = <Home/>
         }
         else if(this.state.viewRegistration === true){
-            content = <Register/>
+            content = <Register handleInitialize={(initializeStatus)=>{this.handleInitialize(initializeStatus)}}/>
         }
         else if(this.state.viewScoreboard === true){
             content = <Scoreboard/>
         }
         else if(this.state.viewLineup === true){
-            content = <Lineup/>
+            content = <Lineup initialize={this.state.initialize}/>
         }
         else if(this.state.viewCurrentGame === true){
             content = <Currentgame/>

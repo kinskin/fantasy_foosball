@@ -21,28 +21,29 @@ class Register extends React.Component{
             secondPlayerLastName: '',
             firstPlayerInput: false,
             secondPlayerInput: false,
+            initialize: false,
             currentTeam: []
         }
     }
 
     componentDidMount(){
         let value = JSON.parse(localStorage.getItem('team'))
-        if(value === null || value === undefined){
+        let value2 = JSON.parse(localStorage.getItem('teamInitialize'))
+        if(value === null){
             this.setState({currentTeam: []},()=>{
                 console.log(this.state.currentTeam)
             })
         }
         else{
-            this.setState({currentTeam: value},()=>{
-                console.log(shuffle(this.state.currentTeam))
-            })
+            this.setState({currentTeam: value, initialize: value2})
         }
     }
 
     eventTeamHandler(event){
         let teamName = this.state.teamName
+        let totalTeam = this.state.currentTeam.length
         this.setState({teamName: event.target.value},()=>{
-            if(teamName.length > 5){
+            if(teamName.length > 5 && teamName.length < 15 && totalTeam <=16){
                 this.setState({firstPlayerInput: true})
             }
             else{
@@ -106,39 +107,49 @@ class Register extends React.Component{
         })
     }
 
+    handleInitialize(initializeStatus){
+        this.setState({initialize: initializeStatus}, ()=>{
+            this.props.handleInitialize(initializeStatus)
+        })
+    }
+
     render(){
 
-        let showPlayerInput
+        let showPlayerInput;
         let showButton;
         let submitButton;
-        if(this.state.firstPlayerInput === true && this.state.secondPlayerInput === false){
-            showPlayerInput = <First
-                                    firstPlayerFirstName={this.state.firstPlayerFirstName}
-                                    firstPlayerLastName={this.state.firstPlayerLastName}
-                                    inputFirstPlayerFirstName={(firstName)=>{this.inputFirstPlayerFirstName(firstName)}}
-                                    inputFirstPlayerLastName={(lastName)=>{this.inputFirstPlayerLastName(lastName)}}>
-                                </First>
-            showButton = <button className='btn btn-md btn-outline-primary' onClick={()=>{this.showSecondPlayInput()}}>Add Second Player</button>
-            submitButton = <button className='btn btn-md btn-outline-success' onClick={()=>{this.handlePlayerRegister()}}>Register</button>
-        }
-        else if(this.state.firstPlayerInput === true && this.state.secondPlayerInput === true){
-            showPlayerInput =   <Fragment>
-                                    <First
+        if(this.state.initialize !== true){
+            console.log('hello')
+            if(this.state.firstPlayerInput === true && this.state.secondPlayerInput === false){
+                showPlayerInput = <First
                                         firstPlayerFirstName={this.state.firstPlayerFirstName}
                                         firstPlayerLastName={this.state.firstPlayerLastName}
                                         inputFirstPlayerFirstName={(firstName)=>{this.inputFirstPlayerFirstName(firstName)}}
                                         inputFirstPlayerLastName={(lastName)=>{this.inputFirstPlayerLastName(lastName)}}>
                                     </First>
-                                    <Second
-                                        secondPlayerFirstName={this.state.secondPlayerFirstName}
-                                        secondPlayerLastName={this.state.secondPlayerLastName}
-                                        inputSecondPlayerFirstName={(firstName)=>{this.inputSecondPlayerFirstName(firstName)}}
-                                        inputSecondPlayerLastName={(lastName)=>{this.inputSecondPlayerLastName(lastName)}}>
-                                    </Second>
-                                </Fragment>
-            showButton = <button className='btn btn-md btn-outline-primary' onClick={()=>{this.showSecondPlayInput()}}>Remove Second Player</button>
-            submitButton = <button className='btn btn-md btn-outline-success' onClick={()=>{this.handlePlayerRegister()}}>Register</button>
+                showButton = <button className='btn btn-md btn-outline-primary' onClick={()=>{this.showSecondPlayInput()}}>Add Second Player</button>
+                submitButton = <button className='btn btn-md btn-outline-success' onClick={()=>{this.handlePlayerRegister()}}>Register</button>
+            }
+            else if(this.state.firstPlayerInput === true && this.state.secondPlayerInput === true){
+                showPlayerInput =   <Fragment>
+                                        <First
+                                            firstPlayerFirstName={this.state.firstPlayerFirstName}
+                                            firstPlayerLastName={this.state.firstPlayerLastName}
+                                            inputFirstPlayerFirstName={(firstName)=>{this.inputFirstPlayerFirstName(firstName)}}
+                                            inputFirstPlayerLastName={(lastName)=>{this.inputFirstPlayerLastName(lastName)}}>
+                                        </First>
+                                        <Second
+                                            secondPlayerFirstName={this.state.secondPlayerFirstName}
+                                            secondPlayerLastName={this.state.secondPlayerLastName}
+                                            inputSecondPlayerFirstName={(firstName)=>{this.inputSecondPlayerFirstName(firstName)}}
+                                            inputSecondPlayerLastName={(lastName)=>{this.inputSecondPlayerLastName(lastName)}}>
+                                        </Second>
+                                    </Fragment>
+                showButton = <button className='btn btn-md btn-outline-primary' onClick={()=>{this.showSecondPlayInput()}}>Remove Second Player</button>
+                submitButton = <button className='btn btn-md btn-outline-success' onClick={()=>{this.handlePlayerRegister()}}>Register</button>
+            }
         }
+
 
         return(
             <div className='text-center'>
@@ -166,7 +177,10 @@ class Register extends React.Component{
                             <div className={Style.teamHeader}>
                                 <p> Teams </p>
                             </div>
-                            <Regteam currentTeam={this.state.currentTeam}/>
+                            <Regteam
+                                currentTeam={this.state.currentTeam}
+                                handleInitialize={(initializeStatus)=>{this.handleInitialize(initializeStatus)}}>
+                            </Regteam>
                         </div>
                     </div>
                 </div>
