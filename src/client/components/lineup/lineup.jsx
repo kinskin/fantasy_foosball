@@ -1,6 +1,10 @@
 import React from 'react';
 import Style from './style.scss';
 
+import Elimination from './elimination/elimination.jsx'
+import Semifinal from './semifinal/semifinal.jsx'
+import Final from './final/final.jsx'
+
 class Lineup extends React.Component{
 
     constructor(props){
@@ -26,16 +30,32 @@ class Lineup extends React.Component{
         }
     }
 
+    handleElimination(){
+
+        this.setState({elimination: true, semiFinal:false, final:false})
+    }
+
+    handleSemiFinal(){
+        this.setState({elimination: false, semiFinal:true, final:false})
+    }
+
+    handleFinal(){
+        this.setState({elimination: false, semiFinal:false, final:true})
+    }
+
+
     render(){
-        let allTeams;
+        let teamStage;
         if(this.state.initialize !== null){
-            allTeams = this.state.currentTeam.map((team,index)=>{
-                return(
-                    <div className={Style.indivTeam}>
-                        <p>{index+1}. {team.teamName}</p>
-                    </div>
-                )
-            })
+            if(this.state.elimination === true){
+                teamStage = <Elimination currentTeam={this.state.currentTeam} initialize={this.state.initialize}/>
+            }
+            else if(this.state.semiFinal === true){
+                teamStage = <Semifinal/>
+            }
+            else if(this.state.final === true){
+                teamStage = <Final/>
+            }
         }
 
         return(
@@ -45,10 +65,11 @@ class Lineup extends React.Component{
                 </div>
                 <div className={Style.contentBody}>
                     <div className='d-flex flex-row justify-content-center'>
-                        <button className='btn btn-md btn-outline-dark mx-3'> Elimination round </button>
-                        <button className='btn btn-md btn-outline-dark mx-3'> Semi Final </button>
-                        <button className='btn btn-md btn-outline-dark mx-3'> Final </button>
+                        <button className='btn btn-md btn-outline-dark mx-3' onClick={()=>{this.handleElimination()}}> Elimination round </button>
+                        <button className='btn btn-md btn-outline-dark mx-3' onClick={()=>{this.handleSemiFinal()}}> Semi Final </button>
+                        <button className='btn btn-md btn-outline-dark mx-3' onClick={()=>{this.handleFinal()}}> Final </button>
                     </div>
+                    {teamStage}
                 </div>
             </div>
         )

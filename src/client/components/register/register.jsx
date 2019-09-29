@@ -22,6 +22,7 @@ class Register extends React.Component{
             firstPlayerInput: false,
             secondPlayerInput: false,
             initialize: false,
+            counterId: 1,
             currentTeam: []
         }
     }
@@ -29,13 +30,17 @@ class Register extends React.Component{
     componentDidMount(){
         let value = JSON.parse(localStorage.getItem('team'))
         let value2 = JSON.parse(localStorage.getItem('teamInitialize'))
-        if(value === null){
-            this.setState({currentTeam: []},()=>{
+        let value3 = JSON.parse(localStorage.getItem('nextTeamId'))
+        if(value === null && value2 === null){
+            this.setState({currentTeam: [], counterId:1},()=>{
                 console.log(this.state.currentTeam)
             })
         }
+        else if(value !== null && value2 === null){
+            this.setState({currentTeam: value, counterId: value3})
+        }
         else{
-            this.setState({currentTeam: value, initialize: value2})
+            this.setState({currentTeam: value, initialize: value2, counterId: value3})
         }
     }
 
@@ -90,7 +95,9 @@ class Register extends React.Component{
         let secondPlayerFirstName = this.state.secondPlayerFirstName
         let secondPlayerLastName = this.state.secondPlayerLastName
         let currentTeam = this.state.currentTeam
+        let counterId = this.state.counterId
         let teamData = {
+            teamId: counterId,
             teamName: teamName,
             firstPlayer:{
                 firstName: firstPlayerFirstName,
@@ -102,8 +109,9 @@ class Register extends React.Component{
             }
         }
         currentTeam.push(teamData)
-        this.setState({currentTeam: currentTeam, teamName: '' , firstPlayerFirstName: '', firstPlayerLastName: '', secondPlayerFirstName: '', secondPlayerLastName: '',firstPlayerInput: false, secondPlayerInput: false },()=>{
+        this.setState({currentTeam: currentTeam, teamName: '' , firstPlayerFirstName: '', firstPlayerLastName: '', secondPlayerFirstName: '', secondPlayerLastName: '',firstPlayerInput: false, secondPlayerInput: false, counterId: counterId+1},()=>{
             localStorage.setItem('team', JSON.stringify(this.state.currentTeam))
+            localStorage.setItem('nextTeamId', JSON.stringify(this.state.counterId))
         })
     }
 
