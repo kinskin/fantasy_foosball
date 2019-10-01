@@ -27,42 +27,54 @@ class Counter extends React.Component{
         }
     }
 
-    checkForWin(){
+    scoreboard(data1,data2){
         let scoreboard = this.state.scoreboard
+        for(let i = 0; i < scoreboard.length; i++){
+            if(data1.team.teamName === scoreboard[i].team.teamName){
+                scoreboard[i] = data1
+            }
+            else if(data2.team.teamName === scoreboard[i].team.teamName)
+                scoreboard[i] = data2
+        }
+        this.setState({scoreboard: scoreboard},()=>{
+            localStorage.setItem('scoreboard', JSON.stringify(this.state.scoreboard))
+        })
+    }
+
+
+    checkForWin(){
         let teamOneWin = this.state.teamOneWin
         let teamTwoWin = this.state.teamTwoWin
         let teamOne = this.props.matchUp.teamOne
+        let teamOneWinning = this.props.matchUp.teamOne.teamWin
         let teamTwo = this.props.matchUp.teamTwo
+        let teamTwoWinning = this.props.matchUp.teamTwo.teamWin
         if(teamOneWin == 2){
             let data1 = {
-                team: teamOne,
-                teamWin: teamOneWin
+                team: teamOne.team,
+                teamWin: teamOneWinning+teamOneWin
             }
             let data2 = {
-                team: teamTwo,
-                teamWin: teamTwoWin
+                team: teamTwo.team,
+                teamWin: teamTwoWinning+teamTwoWin
             }
-            scoreboard.push(data1)
-            scoreboard.push(data2)
-            this.setState({status: '', teamOneWin: 0, teamOneScore: 0, teamTwoWin:0, teamTwoScore:0, round:1, scoreboard: scoreboard},()=>{
-                this.props.winningTeam(data1)
-                localStorage.setItem('scoreboard', JSON.stringify(this.state.scoreboard))
+            this.scoreboard(data1,data2)
+            this.setState({status: '', teamOneWin: 0, teamOneScore: 0, teamTwoWin:0, teamTwoScore:0, round:1},()=>{
+                 this.props.winningTeam(data1)
             })
         }
         else if(teamTwoWin == 2){
             let data1 = {
-                team: teamTwo,
-                teamWin: teamTwoWin
+                team: teamTwo.team,
+                teamWin: teamTwoWinning+teamTwoWin
             }
             let data2 = {
-                team: teamOne,
-                teamWin: teamOneWin
+                team: teamOne.team,
+                teamWin: teamOneWinning+teamOneWin
             }
-            scoreboard.push(data1)
-            scoreboard.push(data2)
-            this.setState({status: '', teamOneWin: 0, teamOneScore: 0, teamTwoWin:0, teamTwoScore:0, round:1,scoreboard:scoreboard},()=>{
+            this.scoreboard(data1,data2)
+            this.setState({status: '', teamOneWin: 0, teamOneScore: 0, teamTwoWin:0, teamTwoScore:0, round:1},()=>{
                 this.props.winningTeam(data1)
-                localStorage.setItem('scoreboard', JSON.stringify(this.state.scoreboard))
             })
         }
     }
@@ -131,7 +143,7 @@ class Counter extends React.Component{
             if(this.state.nextGame === false){
                 score = <div className={Style.mainCounter+' d-flex flex-wrap justify-content-center mx-3'}>
                             <div className={Style.counter+' mx-3'}>
-                                <h4 className='my-3'>{this.props.matchUp.teamOne.teamName}</h4>
+                                <h4 className='my-3'>{this.props.matchUp.teamOne.team.teamName}</h4>
                                 <p>{this.state.teamOneScore}</p>
                                 <div className={Style.button}>
                                     <button className='btn btn-md btn-outline-dark mx-3' onClick={()=>{this.handleMinusTeamOne()}}>Minus</button>
@@ -139,7 +151,7 @@ class Counter extends React.Component{
                                 </div>
                             </div>
                             <div className={Style.counter+' mx-3'}>
-                                <h4 className='my-3'>{this.props.matchUp.teamTwo.teamName}</h4>
+                                <h4 className='my-3'>{this.props.matchUp.teamTwo.team.teamName}</h4>
                                 <p>{this.state.teamTwoScore}</p>
                                 <div className={Style.button}>
                                     <button className='btn btn-md btn-outline-dark mx-3' onClick={()=>{this.handleMinusTeamTwo()}}>Minus</button>
@@ -157,15 +169,15 @@ class Counter extends React.Component{
         let counter;
         if(this.props.matchUp !== ''){
             counter =   <div>
-                            <h3 className='mb-3'> {this.props.matchUp.teamOne.teamName} vs {this.props.matchUp.teamTwo.teamName} </h3>
+                            <h3 className='mb-3'> {this.props.matchUp.teamOne.team.teamName} vs {this.props.matchUp.teamTwo.team.teamName} </h3>
                             <div>
                                 <h5 className='mt-3'>Scores</h5>
                                 <div className='d-flex flex-wrap justify-content-center'>
                                     <div className='m-3'>
-                                        <p>{this.props.matchUp.teamOne.teamName}: {this.state.teamOneWin}</p>
+                                        <p>{this.props.matchUp.teamOne.team.teamName}: {this.state.teamOneWin}</p>
                                     </div>
                                     <div className='m-3'>
-                                        <p>{this.props.matchUp.teamTwo.teamName}: {this.state.teamTwoWin}</p>
+                                        <p>{this.props.matchUp.teamTwo.team.teamName}: {this.state.teamTwoWin}</p>
                                     </div>
                                 </div>
                             </div>
@@ -177,6 +189,8 @@ class Counter extends React.Component{
         else{
             counter = <p> Select the team </p>
         }
+
+
         return(
             <div>
                 {counter}

@@ -1,0 +1,16 @@
+.sideBar{
+	height:600px;
+	overflow-y: scroll;
+	.team{
+		border-radius: 30px;
+		border:2px solid black;
+		margin:20px;
+		p{
+			padding-top:12px;
+		}
+	}
+	.team:hover{
+		cursor:pointer;
+		border:2px solid red;
+	}
+}

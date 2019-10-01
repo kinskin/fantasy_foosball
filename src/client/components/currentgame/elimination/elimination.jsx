@@ -37,18 +37,18 @@ class Elimination extends React.Component{
     winningTeam(data){
         let winningTeam = this.state.winningTeam
         let eliminationTeam = this.state.eliminationTeam
-            for (let i = 0; i < eliminationTeam.length; i++){
-                if(data.team.teamId === eliminationTeam[i].teamOne.teamId || data.team.teamId === eliminationTeam[i].teamTwo.teamId){
-                    eliminationTeam.splice(i,1)
-                }
+        for (let i = 0; i < eliminationTeam.length; i++){
+            if(data.team.teamId === eliminationTeam[i].teamOne.teamId || data.team.teamId === eliminationTeam[i].teamTwo.teamId){
+                eliminationTeam.splice(i,1)
             }
-            winningTeam.push(data);
-            this.setState({eliminationTeam: eliminationTeam, winningTeam: winningTeam, matchUp: ''},()=>{
-                console.log(this.state.winningTeam)
-                localStorage.setItem('eliminationTeam', JSON.stringify(this.state.eliminationTeam))
-                localStorage.setItem('eliminationWinningTeam', JSON.stringify(this.state.winningTeam))
-            })
         }
+        winningTeam.push(data);
+        this.setState({eliminationTeam: eliminationTeam, winningTeam: winningTeam, matchUp: ''},()=>{
+            console.log(this.state.winningTeam)
+            localStorage.setItem('eliminationTeam', JSON.stringify(this.state.eliminationTeam))
+            localStorage.setItem('eliminationWinningTeam', JSON.stringify(this.state.winningTeam))
+        })
+    }
 
     render(){
 

@@ -2,7 +2,7 @@ import React from 'react';
 import Style from './style.scss';
 import shuffle from 'shuffle-array';
 
-class Semifinal extends React.Component{
+class Quarterfinal extends React.Component{
 
     constructor(){
         super()
@@ -17,8 +17,8 @@ class Semifinal extends React.Component{
     }
 
     componentDidMount(){
-        let value = JSON.parse(localStorage.getItem('quarterEliminationWinningTeam'))
-        let value2 = JSON.parse(localStorage.getItem('semiShuffleTeam'))
+        let value = JSON.parse(localStorage.getItem('eliminationWinningTeam'))
+        let value2 = JSON.parse(localStorage.getItem('quarterShuffleTeam'))
         if(value === null){
             this.setState({currentTeam: []})
         }
@@ -57,13 +57,13 @@ class Semifinal extends React.Component{
         }
         this.setState({currentTeam: value, shuffleTeam: newShuffleTeam, shuffle:false,randomize:false},()=>{
             console.log(newShuffleTeam)
-            localStorage.setItem('semiShuffleTeam', JSON.stringify(this.state.shuffleTeam))
+            localStorage.setItem('quarterShuffleTeam', JSON.stringify(this.state.shuffleTeam))
         })
     }
 
     handleReset(){
         this.setState({shuffleTeam:[], shuffle:true},()=>{
-            localStorage.removeItem('semiShuffleTeam')
+            localStorage.removeItem('quarterShuffleTeam')
         })
     }
 
@@ -86,7 +86,7 @@ class Semifinal extends React.Component{
         let shuffleTeam;
         if(this.state.shuffleTeam.length > 0){
             shuffleTeam = this.state.shuffleTeam.map((team,index)=>{
-                if(this.state.shuffleTeam.length === 2){
+                if(this.state.shuffleTeam.length === 4){
                     return(
                         <div className={Style.team+' m-3'} onClick={()=>{this.handleCurrentGame()}} key={index} id={team.eliminateId}>
                             <div className={Style.singleTeam} id={team.eliminateId}>
@@ -109,10 +109,9 @@ class Semifinal extends React.Component{
             })
         }
 
-
         return(
             <div>
-                <h1>Semi final</h1>
+                <h1>Quarter final</h1>
                 <div className='d-flex flex-row justify-content-center'>
                     {shuffleButton}
                     {saveButton}
@@ -128,4 +127,4 @@ class Semifinal extends React.Component{
     }
 }
 
-export default Semifinal;
+export default Quarterfinal;
