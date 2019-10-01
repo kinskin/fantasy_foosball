@@ -4,6 +4,17 @@
 		font-size: 30px
 	}
 }
+
+.content{
+	display:flex;
+	flex-direction: row;
+	justify-content: space-around;
+	.contentBodyHeader:hover{
+		cursor: pointer;
+		text-decoration: underline;
+	}
+}
+
 .contentBody{
 	margin:20px 0;
 }
