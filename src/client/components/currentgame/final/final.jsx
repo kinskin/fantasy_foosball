@@ -34,7 +34,7 @@ class Final extends React.Component{
                     this.setState({eliminationTeam: finalEliminationTeam, startFinal: startFinal})
                 }
                 else{
-                    this.setState({startFinal: startFinal, endFinal: endFinal, FinalMessage: 'Final Round has ended. Proceed to the scoreboard.'})
+                    this.setState({startFinal: startFinal, endFinal: endFinal, finalMessage: 'Final Round has ended. Proceed to the scoreboard.'})
                 }
             }
         }
