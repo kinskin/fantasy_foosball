@@ -1,5 +1,6 @@
 import React from 'react';
 import Style from './style.scss';
+import sort from 'fast-sort'
 
 class Scoreboard extends React.Component{
 
@@ -14,6 +15,7 @@ class Scoreboard extends React.Component{
     componentDidMount(){
         let value = JSON.parse(localStorage.getItem('scoreboard'))
         if( value !== null){
+            value = sort(value).desc(t=>t.teamWin)
             this.setState({scoreboard: value},()=>{
                 console.log(this.state.scoreboard)
             })
@@ -22,32 +24,75 @@ class Scoreboard extends React.Component{
 
     render(){
 
-        let scoreboard;
+        let teamName;
+        let teamWin;
+        let teamMembers;
+        let ranking;
         if(this.state.scoreboard.length > 0){
-            scoreboard = this.state.scoreboard.map((score,index)=>{
+            ranking = this.state.scoreboard.map((score,index)=>{
                 return(
-                    <div>
-                        <div>
-                            <p>{score.team.teamName}</p>
+                    <p>{index+1}</p>
+                )
+            })
+            teamName = this.state.scoreboard.map((score,index)=>{
+                return(
+                    <p>{score.team.teamName}</p>
+                )
+            })
+            teamWin = this.state.scoreboard.map((score,index)=>{
+                return(
+                    <p>{score.teamWin}</p>
+                )
+            })
+            teamMembers = this.state.scoreboard.map((score,index)=>{
+                return(
+                    <div className='row'>
+                        <div className='col-6'>
+                            <p>{score.team.firstPlayer.firstName}</p>
                         </div>
-                        <div>
-                            <p>{score.teamWin}</p>
+                        <div className='col-6'>
+                            <p>{score.team.secondPlayer.firstName}</p>
                         </div>
                     </div>
                 )
             })
         }
         else{
-            scoreboard = <p>No score yet</p>
+            teamName = <p>No score yet</p>
         }
 
         return(
             <div className='text-center'>
                 <div className={Style.contentHeader}>
-                    <h1> Hello Scoreboard </h1>
+                    <h1> Scoreboard </h1>
                 </div>
                 <div className={Style.contentBody}>
-                    {scoreboard}
+                    <div className='d-flex flex-row justify-content-center'>
+                        <div className='col-2'>
+                            <div className={Style.teamNameHeader}>
+                                <p> Ranking </p>
+                            </div>
+                            {ranking}
+                        </div>
+                        <div className='col-2'>
+                            <div className={Style.teamNameHeader}>
+                                <p> Team </p>
+                            </div>
+                            {teamName}
+                        </div>
+                        <div className='col-2'>
+                            <div className={Style.teamNameHeader}>
+                                <p> Score </p>
+                            </div>
+                            {teamWin}
+                        </div>
+                        <div className='col-4'>
+                            <div className={Style.teamNameHeader}>
+                                <p> Team Members </p>
+                            </div>
+                            {teamMembers}
+                        </div>
+                    </div>
                 </div>
             </div>
         )

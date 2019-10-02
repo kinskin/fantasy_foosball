@@ -77,7 +77,7 @@ class App extends React.Component {
         return (
             <div className='container'>
                 <div className={Style.banner}>
-                    <p>Foosball</p>
+                    <p>Foosball<br/>Scoreboard</p>
                 </div>
                 <div className={Style.navbar}>
                     <Navbar
