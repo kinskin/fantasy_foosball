@@ -4,12 +4,12 @@ import shuffle from 'shuffle-array';
 
 class Elimination extends React.Component{
 
-    constructor(props){
-        super(props)
+    constructor(){
+        super()
 
         this.state = {
-                currentTeam: props.currentTeam,
-                initialize: props.initialize,
+                currentTeam: [],
+                initialize: false,
                 randomize:false,
                 shuffle:true,
                 startElimination: false,
@@ -26,22 +26,27 @@ class Elimination extends React.Component{
         let value4 = JSON.parse(localStorage.getItem('startElimination'))
         let value5 = JSON.parse(localStorage.getItem('endElimination'))
         if(value === null){
-            this.setState({currentTeam: []})
+            this.setState({currentTeam: [], eliminationMessage:'You have not initialize the game.'})
         }
         else{
-            if(value3 === null){
-                this.setState({currentTeam: value, initialize: value2})
+            if(value2 === null){
+                this.setState({currentTeam: value, initialize: false, eliminationMessage:'You have not initialize the game.'})
             }
             else{
-                if(value4 === null){
-                    this.setState({currentTeam: value, initialize: value2, shuffleTeam:value3, shuffle:false})
+                if(value3 === null){
+                    this.setState({currentTeam: value, initialize: value2})
                 }
                 else{
-                    if(value5 === null){
-                        this.setState({currentTeam: value, initialize: value2, shuffleTeam:value3, startElimination: value4, eliminationMessage:'Proceed to Elimination Round in Current Game', shuffle:false, })
+                    if(value4 === null){
+                        this.setState({currentTeam: value, initialize: value2, shuffleTeam:value3, shuffle:false})
                     }
                     else{
-                        this.setState({currentTeam: value, initialize: value2, shuffleTeam:value3, startElimination: value4, eliminationMessage: 'Proceed to Quarter Final in Line up', shuffle:false, })
+                        if(value5 === null){
+                            this.setState({currentTeam: value, initialize: value2, shuffleTeam:value3, startElimination: value4, eliminationMessage:'Proceed to Elimination Round in Current Game.', shuffle:false, })
+                        }
+                        else{
+                            this.setState({currentTeam: value, initialize: value2, shuffleTeam:value3, startElimination: value4, eliminationMessage: 'Proceed to Quarter Final in Line up', shuffle:false, })
+                        }
                     }
                 }
             }
@@ -100,16 +105,18 @@ class Elimination extends React.Component{
         let saveButton;
         let resetButton;
         let startButton;
-        if(this.state.shuffle === true && this.state.randomize === false){
-            shuffleButton = <button className='btn btn-md btn-outline-primary' onClick={()=>{this.handleShuffle()}}>Shuffle team</button>
-        }
-        else if(this.state.shuffle === true && this.state.randomize === true){
-            shuffleButton = <button className='btn btn-md btn-outline-primary mx-3' onClick={()=>{this.handleShuffle()}}>Shuffle team</button>
-            saveButton = <button className='btn btn-md btn-outline-primary mx-3' onClick={()=>{this.handleSaveTeam()}}> Save arrangement</button>
-        }
-        else if(this.state.startElimination === false){
-            resetButton = <button className='btn btn-md btn-outline-primary mx-3' onClick={()=>{this.handleReset()}}>Reset</button>
-            startButton = <button className='btn btn-md btn-outline-dark mx-3' onClick ={()=>{this.handleStart()}}>Start game</button>
+        if(this.state.initialize !== false){
+            if(this.state.shuffle === true && this.state.randomize === false){
+                shuffleButton = <button className='btn btn-md btn-outline-primary' onClick={()=>{this.handleShuffle()}}>Shuffle team</button>
+            }
+            else if(this.state.shuffle === true && this.state.randomize === true){
+                shuffleButton = <button className='btn btn-md btn-outline-primary mx-3' onClick={()=>{this.handleShuffle()}}>Shuffle team</button>
+                saveButton = <button className='btn btn-md btn-outline-primary mx-3' onClick={()=>{this.handleSaveTeam()}}> Save arrangement</button>
+            }
+            else if(this.state.startElimination === false){
+                resetButton = <button className='btn btn-md btn-outline-primary mx-3' onClick={()=>{this.handleReset()}}>Reset</button>
+                startButton = <button className='btn btn-md btn-outline-dark mx-3' onClick ={()=>{this.handleStart()}}>Start game</button>
+            }
         }
 
         let shuffleTeam;

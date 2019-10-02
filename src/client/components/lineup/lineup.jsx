@@ -51,19 +51,17 @@ class Lineup extends React.Component{
 
     render(){
         let teamStage;
-        if(this.state.initialize !== null){
-            if(this.state.elimination === true){
-                teamStage = <Elimination currentTeam={this.state.currentTeam} initialize={this.state.initialize}/>
-            }
-            else if(this.state.quarterFinal === true){
-                teamStage = <Quarterfinal />
-            }
-            else if(this.state.semiFinal === true){
-                teamStage = <Semifinal/>
-            }
-            else if(this.state.final === true){
-                teamStage = <Final/>
-            }
+        if(this.state.elimination === true){
+            teamStage = <Elimination currentTeam={this.state.currentTeam}/>
+        }
+        else if(this.state.quarterFinal === true){
+            teamStage = <Quarterfinal />
+        }
+        else if(this.state.semiFinal === true){
+            teamStage = <Semifinal/>
+        }
+        else if(this.state.final === true){
+            teamStage = <Final/>
         }
 
         return(

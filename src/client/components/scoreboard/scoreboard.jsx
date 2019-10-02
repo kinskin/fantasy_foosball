@@ -58,9 +58,6 @@ class Scoreboard extends React.Component{
                 )
             })
         }
-        else{
-            teamStatus = <h4>No score yet</h4>
-        }
 
         return(
             <div className='text-center'>
