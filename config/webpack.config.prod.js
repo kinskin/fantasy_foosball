@@ -1,6 +1,5 @@
 const {resolve} = require('path');
 const merge = require('webpack-merge');
-var UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 
@@ -9,10 +8,6 @@ const commonConfig = require('./webpack.config.common');
 module.exports = merge(commonConfig, {
   mode: 'production',
   plugins: [
-    new UglifyJsPlugin({
-      parallel: true,
-      extractComments: true
-    }),
     new HtmlWebpackPlugin({
       hash: true,
       inject: true,
