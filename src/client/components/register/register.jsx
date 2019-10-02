@@ -121,13 +121,21 @@ class Register extends React.Component{
         })
     }
 
+    handleDeleteTeam(teamId){
+        let currentTeam = this.state.currentTeam
+        let deleteTeamIndex = currentTeam.findIndex(team => team.teamId == teamId)
+        currentTeam.splice(deleteTeamIndex,1)
+        this.setState({currentTeam: currentTeam},()=>{
+            localStorage.setItem('team', JSON.stringify(this.state.currentTeam))
+        })
+    }
+
     render(){
 
         let showPlayerInput;
         let showButton;
         let submitButton;
         if(this.state.initialize !== true){
-            console.log('hello')
             if(this.state.firstPlayerInput === true && this.state.secondPlayerInput === false){
                 showPlayerInput = <First
                                         firstPlayerFirstName={this.state.firstPlayerFirstName}
@@ -158,6 +166,25 @@ class Register extends React.Component{
             }
         }
 
+        let showTeamInput;
+        let teamNote;
+        let caption;
+        let clearButton;
+        if(this.state.currentTeam.length < 16){
+            teamNote = <p> Maximum participating is 16. No more or less </p>
+            showTeamInput = <Fragment>
+                                Team name: <input className='form-control' onChange={(event)=>{this.eventTeamHandler(event)}} value={this.state.teamName}/>
+                            </Fragment>
+            caption = <small>Enter at least 6 character</small>
+            clearButton =   <div className='my-4 d-flex flex-row justify-content-around align-items-center'>
+                                <button className='btn btn-md btn-outline-danger' onClick={()=>{this.handleClearInput()}}>clear</button>
+                                {submitButton}
+                            </div>
+        }
+        else{
+            showTeamInput = <p> Total Number of participating team in maximum </p>
+        }
+
 
         return(
             <div className='text-center'>
@@ -171,14 +198,12 @@ class Register extends React.Component{
                                 <p> Register team </p>
                             </div>
                             <div className='card-body form-group'>
-                                Team name: <input className='form-control' onChange={(event)=>{this.eventTeamHandler(event)}} value={this.state.teamName}/>
-                                <small>Enter at least 6 character</small>
+                                {teamNote}
+                                {showTeamInput}
+                                {caption}
                                 {showPlayerInput}
                                 {showButton}
-                                <div className='my-4 d-flex flex-row justify-content-around align-items-center'>
-                                    <button className='btn btn-md btn-outline-danger' onClick={()=>{this.handleClearInput()}}>clear</button>
-                                    {submitButton}
-                                </div>
+                                {clearButton}
                             </div>
                         </div>
                         <div className='col-8'>
@@ -187,7 +212,8 @@ class Register extends React.Component{
                             </div>
                             <Regteam
                                 currentTeam={this.state.currentTeam}
-                                handleInitialize={(initializeStatus)=>{this.handleInitialize(initializeStatus)}}>
+                                handleInitialize={(initializeStatus)=>{this.handleInitialize(initializeStatus)}}
+                                handleDeleteTeam={(teamId)=>{this.handleDeleteTeam(teamId)}}>
                             </Regteam>
                         </div>
                     </div>

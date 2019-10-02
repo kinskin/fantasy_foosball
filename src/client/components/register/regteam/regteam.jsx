@@ -1,5 +1,6 @@
 import React from 'react';
 import Style from './style.scss';
+import 'boxicons';
 
 class Regteam extends React.Component{
 
@@ -33,18 +34,35 @@ class Regteam extends React.Component{
         })
     }
 
+    handleDeleteTeam(event){
+        this.props.handleDeleteTeam(event.target.id)
+    }
+
     render(){
+
+
 
         let numberOfTeam = this.props.currentTeam.length
 
         let currentTeam;
+        let trashIcon;
         if(this.props.currentTeam.length > 0){
             currentTeam = this.props.currentTeam.map((team,index)=>{
-                return(
-                    <div className={Style.indivTeam} key={index}>
-                        <p>{index+1}. {team.teamName}</p>
-                    </div>
-                )
+                if(this.state.initialize === false){
+                    return(
+                        <div className={Style.indivTeam+ ' d-flex flex-row justify-content-around align-items-baseline'} key={index}>
+                            <p>{index+1}. {team.teamName}</p>
+                            <i className='bx bxs-trash' onClick={(event)=>{this.handleDeleteTeam(event)}} id={team.teamId} style={{fontSize: '20px'}}></i>
+                        </div>
+                    )
+                }
+                else{
+                    return(
+                        <div className={Style.indivTeam+ ' d-flex flex-row justify-content-around align-items-baseline'} key={index}>
+                            <p>{index+1}. {team.teamName}</p>
+                        </div>
+                    )
+                }
             })
         }
         else{

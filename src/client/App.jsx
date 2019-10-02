@@ -21,8 +21,19 @@ class App extends React.Component {
             viewScoreboard: false,
             viewLineup: false,
             viewCurrentGame: false,
-            initialize: false
+            initialize: false,
+            startGame: false
         };
+    }
+
+    componentDidMount(){
+        let startGame = JSON.parse(localStorage.getItem('startGame'))
+        if(startGame === null){
+            this.setState({startGame: false})
+        }
+        else{
+            this.setState({startGame: startGame})
+        }
     }
 
     handleHome(status){
@@ -54,23 +65,34 @@ class App extends React.Component {
         this.setState({initialize: initializeStatus})
     }
 
+    handleStartGame(status){
+        this.setState({startGame: status})
+    }
+
+    handleRestartGame(status){
+        this.setState({startGame:status})
+    }
+
+
     render() {
 
         let content;
         if(this.state.viewHome === true){
-            content = <Home/>
+            content = <Home startGame={(status)=>{this.handleStartGame(status)}} restartGame={(status)=>{this.handleRestartGame(status)}}/>
         }
-        else if(this.state.viewRegistration === true){
-            content = <Register handleInitialize={(initializeStatus)=>{this.handleInitialize(initializeStatus)}}/>
-        }
-        else if(this.state.viewScoreboard === true){
-            content = <Scoreboard/>
-        }
-        else if(this.state.viewLineup === true){
-            content = <Lineup initialize={this.state.initialize}/>
-        }
-        else if(this.state.viewCurrentGame === true){
-            content = <Currentgame/>
+        else if(this.state.startGame === true){
+            if(this.state.viewRegistration === true){
+                content = <Register handleInitialize={(initializeStatus)=>{this.handleInitialize(initializeStatus)}}/>
+            }
+            else if(this.state.viewScoreboard === true){
+                content = <Scoreboard/>
+            }
+            else if(this.state.viewLineup === true){
+                content = <Lineup initialize={this.state.initialize}/>
+            }
+            else if(this.state.viewCurrentGame === true){
+                content = <Currentgame/>
+            }
         }
 
 

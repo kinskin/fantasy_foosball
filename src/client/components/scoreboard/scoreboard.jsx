@@ -28,6 +28,7 @@ class Scoreboard extends React.Component{
         let teamWin;
         let teamMembers;
         let ranking;
+        let teamStatus;
         if(this.state.scoreboard.length > 0){
             ranking = this.state.scoreboard.map((score,index)=>{
                 return(
@@ -58,13 +59,16 @@ class Scoreboard extends React.Component{
             })
         }
         else{
-            teamName = <p>No score yet</p>
+            teamStatus = <h4>No score yet</h4>
         }
 
         return(
             <div className='text-center'>
                 <div className={Style.contentHeader}>
                     <h1> Scoreboard </h1>
+                </div>
+                <div className={Style.contentBody}>
+                    {teamStatus}
                 </div>
                 <div className={Style.contentBody}>
                     <div className='d-flex flex-row justify-content-center'>
