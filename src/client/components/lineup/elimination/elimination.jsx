@@ -12,6 +12,8 @@ class Elimination extends React.Component{
                 initialize: props.initialize,
                 randomize:false,
                 shuffle:true,
+                startElimination: false,
+                eliminationMessage:'',
                 holdingTeam:[],
                 shuffleTeam: [],
             }
@@ -21,6 +23,8 @@ class Elimination extends React.Component{
         let value = JSON.parse(localStorage.getItem('team'))
         let value2 =JSON.parse(localStorage.getItem('teamInitialize'))
         let value3 =JSON.parse(localStorage.getItem('eliminationShuffleTeam'))
+        let value4 = JSON.parse(localStorage.getItem('startElimination'))
+        let value5 = JSON.parse(localStorage.getItem('endElimination'))
         if(value === null){
             this.setState({currentTeam: []})
         }
@@ -29,7 +33,17 @@ class Elimination extends React.Component{
                 this.setState({currentTeam: value, initialize: value2})
             }
             else{
-                this.setState({currentTeam: value, initialize: value2, shuffleTeam:value3, shuffle:false})
+                if(value4 === null){
+                    this.setState({currentTeam: value, initialize: value2, shuffleTeam:value3, shuffle:false})
+                }
+                else{
+                    if(value5 === null){
+                        this.setState({currentTeam: value, initialize: value2, shuffleTeam:value3, startElimination: value4, eliminationMessage:'Proceed to Elimination Round in Current Game', shuffle:false, })
+                    }
+                    else{
+                        this.setState({currentTeam: value, initialize: value2, shuffleTeam:value3, startElimination: value4, eliminationMessage: 'Proceed to Quarter Final in Line up', shuffle:false, })
+                    }
+                }
             }
         }
     }
@@ -69,6 +83,12 @@ class Elimination extends React.Component{
         })
     }
 
+    handleStart(){
+        this.setState({startElimination: true, eliminationMessage:'Proceed to Elimination Round in Current Game'},()=>{
+            localStorage.setItem('startElimination', JSON.stringify(this.state.startElimination))
+        })
+    }
+
     handleCurrentGame(){
         console.log(event.target.id)
     }
@@ -79,6 +99,7 @@ class Elimination extends React.Component{
         let shuffleButton;
         let saveButton;
         let resetButton;
+        let startButton;
         if(this.state.shuffle === true && this.state.randomize === false){
             shuffleButton = <button className='btn btn-md btn-outline-primary' onClick={()=>{this.handleShuffle()}}>Shuffle team</button>
         }
@@ -86,8 +107,9 @@ class Elimination extends React.Component{
             shuffleButton = <button className='btn btn-md btn-outline-primary mx-3' onClick={()=>{this.handleShuffle()}}>Shuffle team</button>
             saveButton = <button className='btn btn-md btn-outline-primary mx-3' onClick={()=>{this.handleSaveTeam()}}> Save arrangement</button>
         }
-        else{
-            resetButton = <button className='btn btn-md btn-outline-primary' onClick={()=>{this.handleReset()}}>Reset</button>
+        else if(this.state.startElimination === false){
+            resetButton = <button className='btn btn-md btn-outline-primary mx-3' onClick={()=>{this.handleReset()}}>Reset</button>
+            startButton = <button className='btn btn-md btn-outline-dark mx-3' onClick ={()=>{this.handleStart()}}>Start game</button>
         }
 
         let shuffleTeam;
@@ -116,6 +138,7 @@ class Elimination extends React.Component{
             })
         }
 
+
         return(
             <div>
                 <h1>Elimination round</h1>
@@ -123,7 +146,9 @@ class Elimination extends React.Component{
                     {shuffleButton}
                     {saveButton}
                     {resetButton}
+                    {startButton}
                 </div>
+                <h4>{this.state.eliminationMessage}</h4>
                 <div className='row'>
                     <div className='col-8 offset-2 d-flex flex-wrap justify-content-center'>
                         {shuffleTeam}

@@ -7,10 +7,14 @@
 }
 .contentBody{
 	margin:20px 0;
-	.body{
-		p{
-			font-size: 20px;
-			border-bottom: 1px solid black;
-		}
+
+}
+.content{
+	display:flex;
+	flex-direction: row;
+	justify-content: space-around;
+	.contentBodyHeader:hover{
+		cursor: pointer;
+		text-decoration: underline;
 	}
 }

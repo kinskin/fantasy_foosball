@@ -13,21 +13,43 @@ class Semifinal extends React.Component{
                 shuffle:true,
                 holdingTeam:[],
                 shuffleTeam: [],
+                startSemi: false,
+                endSemi: false,
+                semiMessage: '',
+                endQuarter: false
             }
     }
 
     componentDidMount(){
         let value = JSON.parse(localStorage.getItem('quarterEliminationWinningTeam'))
         let value2 = JSON.parse(localStorage.getItem('semiShuffleTeam'))
-        if(value === null){
-            this.setState({currentTeam: []})
+        let value3 = JSON.parse(localStorage.getItem('endQuarter'))
+        let value4 = JSON.parse(localStorage.getItem('startSemi'))
+        let value5 = JSON.parse(localStorage.getItem('endSemi'))
+        if(value3 === null){
+            this.setState({semiMessage: 'You have not completed the Quarter Final round', endQuarter: false})
         }
         else{
-            if(value2 === null){
-                this.setState({currentTeam: value},()=>{console.log(this.state.currentTeam)})
+            if(value === null){
+                this.setState({currentTeam: [], endQuarter: value3})
             }
             else{
-                this.setState({currentTeam:value, shuffleTeam:value2,shuffle:false})
+                if(value2 === null){
+                    this.setState({currentTeam: value, endQuarter: value3},()=>{console.log(this.state.currentTeam)})
+                }
+                else{
+                    if(value4 === null){
+                        this.setState({currentTeam:value, shuffleTeam:value2,shuffle:false, endQuarter: value3})
+                    }
+                    else{
+                        if(value5 === null){
+                            this.setState({endQuarter: value3, currentTeam:value, shuffleTeam:value2,shuffle:false, startSemi: value4, semiMessage:'Proceed to Semi Final round in Current Game', endSemi:false})
+                        }
+                        else{
+                            this.setState({endQuarter: value3, currentTeam:value, shuffleTeam:value2,shuffle:false, startSemi: value4, semiMessage:'Proceed to Final round in Line up', endSemi:value5})
+                        }
+                    }
+                }
             }
         }
     }
@@ -67,20 +89,30 @@ class Semifinal extends React.Component{
         })
     }
 
+    handleStart(){
+        this.setState({startSemi: true, semiMessage:'Proceed to Semi Final round in Current Game'},()=>{
+            localStorage.setItem('startSemi', JSON.stringify(this.state.startSemi))
+        })
+    }
+
     render(){
 
         let shuffleButton;
         let saveButton;
         let resetButton;
-        if(this.state.shuffle === true && this.state.randomize === false){
-            shuffleButton = <button className='btn btn-md btn-outline-primary' onClick={()=>{this.handleShuffle()}}>Shuffle team</button>
-        }
-        else if(this.state.shuffle === true && this.state.randomize === true){
-            shuffleButton = <button className='btn btn-md btn-outline-primary mx-3' onClick={()=>{this.handleShuffle()}}>Shuffle team</button>
-            saveButton = <button className='btn btn-md btn-outline-primary mx-3' onClick={()=>{this.handleSaveTeam()}}> Save arrangement</button>
-        }
-        else{
-            resetButton = <button className='btn btn-md btn-outline-primary' onClick={()=>{this.handleReset()}}>Reset</button>
+        let startButton;
+        if(this.state.endQuarter !== false){
+            if(this.state.shuffle === true && this.state.randomize === false){
+                shuffleButton = <button className='btn btn-md btn-outline-primary' onClick={()=>{this.handleShuffle()}}>Shuffle team</button>
+            }
+            else if(this.state.shuffle === true && this.state.randomize === true){
+                shuffleButton = <button className='btn btn-md btn-outline-primary mx-3' onClick={()=>{this.handleShuffle()}}>Shuffle team</button>
+                saveButton = <button className='btn btn-md btn-outline-primary mx-3' onClick={()=>{this.handleSaveTeam()}}> Save arrangement</button>
+            }
+            else if(this.state.startSemi === false){
+                resetButton = <button className='btn btn-md btn-outline-primary' onClick={()=>{this.handleReset()}}>Reset</button>
+                startButton = <button className='btn btn-md btn-outline-dark mx-3' onClick ={()=>{this.handleStart()}}>Start game</button>
+            }
         }
 
         let shuffleTeam;
@@ -117,7 +149,9 @@ class Semifinal extends React.Component{
                     {shuffleButton}
                     {saveButton}
                     {resetButton}
+                    {startButton}
                 </div>
+                <h4>{this.state.semiMessage}</h4>
                 <div className='row'>
                     <div className='col-8 offset-2 d-flex flex-wrap justify-content-center'>
                         {shuffleTeam}

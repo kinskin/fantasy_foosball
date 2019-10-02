@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{Fragment} from 'react';
 import Style from './style.scss';
 import Counter from './counter/counter.jsx'
 
@@ -11,18 +11,25 @@ class Elimination extends React.Component{
             eliminationTeam: [],
             winningTeam:[],
             matchUp:'',
-            eliminationRound: false
+            endElimination:false,
+            endEliminationMessage:''
         }
     }
 
     componentDidMount(){
         let value = JSON.parse(localStorage.getItem('eliminationShuffleTeam'))
         let eliminationTeam = JSON.parse(localStorage.getItem('eliminationTeam'))
+        let endElimination = JSON.parse(localStorage.getItem('endElimination'))
         if(eliminationTeam === null){
             this.setState({eliminationTeam: value})
         }
         else{
-            this.setState({eliminationTeam: eliminationTeam})
+            if(endElimination === null){
+                this.setState({eliminationTeam: eliminationTeam, endElimination:false, endEliminationMessage:''})
+            }
+            else{
+                this.setState({endElimination: endElimination, endEliminationMessage:"Elimination Round has ended. Proceed to quarterfinal in line up or check the scoreboard."})
+            }
         }
     }
 
@@ -34,9 +41,19 @@ class Elimination extends React.Component{
         this.setState({matchUp: matchUp},()=>{console.log(this.state.matchUp)})
     }
 
+    checkEndElimination(){
+        let eliminationTeam = this.state.eliminationTeam
+        if(eliminationTeam.length === 0){
+            this.setState({endElimination: true, endEliminationMessage:"Elimination Round has ended. Proceed to quarterfinal in line up or check the scoreboard."},()=>{
+                localStorage.setItem('endElimination', JSON.stringify(this.state.endElimination))
+            })
+        }
+    }
+
     winningTeam(data){
         let winningTeam = this.state.winningTeam
         let eliminationTeam = this.state.eliminationTeam
+
         for (let i = 0; i < eliminationTeam.length; i++){
             if(data.team.teamId === eliminationTeam[i].teamOne.teamId || data.team.teamId === eliminationTeam[i].teamTwo.teamId){
                 eliminationTeam.splice(i,1)
@@ -47,6 +64,7 @@ class Elimination extends React.Component{
             console.log(this.state.winningTeam)
             localStorage.setItem('eliminationTeam', JSON.stringify(this.state.eliminationTeam))
             localStorage.setItem('eliminationWinningTeam', JSON.stringify(this.state.winningTeam))
+            this.checkEndElimination()
         })
     }
 
@@ -70,17 +88,20 @@ class Elimination extends React.Component{
         }
 
         let showCounter;
-        if(this.state.eliminationRound === false){
+        if(this.state.endElimination === false){
+            console.log()
             showCounter = <Counter matchUp={this.state.matchUp} winningTeam={(data)=>{this.winningTeam(data)}}/>
         }
         else{
-            showCounter = <p> Elimination round has ended </p>
+            showCounter =   <Fragment>
+                                <h4>{this.state.endEliminationMessage}</h4>
+                            </Fragment>
         }
 
         return(
             <div className='row'>
                 <div className='col-3'>
-                    <h4>Elimination round</h4>
+                    <h4>Elimination round team</h4>
                     <div className={Style.sideBar}>
                         {sideBarTeam}
                     </div>

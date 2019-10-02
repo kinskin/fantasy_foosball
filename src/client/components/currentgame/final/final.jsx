@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import Style from './style.scss';
 import Counter from './counter/counter.jsx'
 
@@ -11,18 +11,32 @@ class Final extends React.Component{
             eliminationTeam: [],
             winningTeam:[],
             matchUp:'',
-            eliminationRound: false
+            startFinal: false,
+            endFinal: false,
+            finalMessage: ''
         }
     }
 
     componentDidMount(){
         let value = JSON.parse(localStorage.getItem('finalShuffleTeam'))
         let finalEliminationTeam = JSON.parse(localStorage.getItem('finalEliminationTeam'))
-        if(finalEliminationTeam === null){
-            this.setState({eliminationTeam: value},()=>{console.log(this.state.eliminationTeam)})
+        let startFinal = JSON.parse(localStorage.getItem('startFinal'))
+        let endFinal = JSON.parse(localStorage.getItem('endFinal'))
+        if(startFinal === null){
+            this.setState({finalMessage: 'You either have not start the final round  or have not complete the semi final round',startFinal: false})
         }
         else{
-            this.setState({eliminationTeam: finalEliminationTeam})
+            if(finalEliminationTeam === null){
+                this.setState({eliminationTeam: value, startFinal: startFinal},()=>{console.log(this.state.eliminationTeam)})
+            }
+            else{
+                if(endFinal === null){
+                    this.setState({eliminationTeam: finalEliminationTeam, startFinal: startFinal})
+                }
+                else{
+                    this.setState({startFinal: startFinal, endFinal: endFinal, FinalMessage: 'Final Round has ended. Proceed to the scoreboard.'})
+                }
+            }
         }
     }
 
@@ -32,6 +46,15 @@ class Final extends React.Component{
         let matchUpIndex = eliminationTeam.findIndex(index=>index.eliminateId == event.target.id)
         let matchUp = eliminationTeam[matchUpIndex]
         this.setState({matchUp: matchUp},()=>{console.log(this.state.matchUp)})
+    }
+
+    checkEndFinal(){
+        let eliminationTeam = this.state.eliminationTeam
+        if(eliminationTeam.length === 0){
+            this.setState({endFinal: true, finalMessage: 'Final Round has ended. Proceed to the scoreboard.'},()=>{
+                localStorage.setItem('endFinal', JSON.stringify(this.state.endFinal))
+            })
+        }
     }
 
     winningTeam(data){
@@ -47,6 +70,7 @@ class Final extends React.Component{
             console.log(this.state.winningTeam)
             localStorage.setItem('finalEliminationTeam', JSON.stringify(this.state.eliminationTeam))
             localStorage.setItem('finalEliminationWinningTeam', JSON.stringify(this.state.winningTeam))
+            this.checkEndFinal()
         })
     }
 
@@ -70,12 +94,22 @@ class Final extends React.Component{
         }
 
         let showCounter;
-        if(this.state.eliminationRound === false){
-            showCounter = <Counter matchUp={this.state.matchUp} winningTeam={(data)=>{this.winningTeam(data)}}/>
+        if(this.state.startFinal === false){
+            showCounter =   <Fragment>
+                                <h4>{this.state.finalMessage}</h4>
+                            </Fragment>
         }
         else{
-            showCounter = <p> Elimination round has ended </p>
+            if(this.state.endFinal === false){
+                showCounter = <Counter matchUp={this.state.matchUp} winningTeam={(data)=>{this.winningTeam(data)}}/>
+            }
+            else{
+                showCounter =   <Fragment>
+                                    <h4>{this.state.finalMessage}</h4>
+                                </Fragment>
+            }
         }
+
 
 
         return(

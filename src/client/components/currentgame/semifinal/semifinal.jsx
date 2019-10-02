@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import Style from './style.scss';
 import Counter from './counter/counter.jsx';
 
@@ -11,18 +11,32 @@ class Semifinal extends React.Component{
             eliminationTeam: [],
             winningTeam:[],
             matchUp:'',
-            eliminationRound: false
+            semiMessage: '',
+            startSemi: false,
+            endSemi: false
         }
     }
 
     componentDidMount(){
         let value = JSON.parse(localStorage.getItem('semiShuffleTeam'))
         let quarterEliminationTeam = JSON.parse(localStorage.getItem('semiEliminationTeam'))
-        if(quarterEliminationTeam === null){
-            this.setState({eliminationTeam: value},()=>{console.log(this.state.eliminationTeam)})
+        let startSemi = JSON.parse(localStorage.getItem('startSemi'))
+        let endSemi = JSON.parse(localStorage.getItem('endSemi'))
+        if(startSemi === null){
+            this.setState({semiMessage: 'You either have not start the semi final round  or have not complete the quarter final round',startSemi:false})
         }
         else{
-            this.setState({eliminationTeam: quarterEliminationTeam})
+            if(quarterEliminationTeam === null){
+                this.setState({eliminationTeam: value, startSemi: startSemi},()=>{console.log(this.state.eliminationTeam)})
+            }
+            else{
+                if(endSemi === null){
+                    this.setState({eliminationTeam: quarterEliminationTeam, startSemi: startSemi})
+                }
+                else{
+                    this.setState({startSemi: startSemi, endSemi: endSemi, semiMessage: 'Semi final Round has ended. Proceed to Final round in line up or check the scoreboard.'})
+                }
+            }
         }
     }
 
@@ -32,6 +46,15 @@ class Semifinal extends React.Component{
         let matchUpIndex = eliminationTeam.findIndex(index=>index.eliminateId == event.target.id)
         let matchUp = eliminationTeam[matchUpIndex]
         this.setState({matchUp: matchUp},()=>{console.log(this.state.matchUp)})
+    }
+
+    checkEndSemi(){
+        let eliminationTeam = this.state.eliminationTeam
+        if(eliminationTeam.length === 0){
+            this.setState({endSemi: true, semiMessage: 'Semi final Round has ended. Proceed to Final round in line up or check the scoreboard.'},()=>{
+                localStorage.setItem('endSemi', JSON.stringify(this.state.endSemi))
+            })
+        }
     }
 
     winningTeam(data){
@@ -47,6 +70,7 @@ class Semifinal extends React.Component{
             console.log(this.state.winningTeam)
             localStorage.setItem('semiEliminationTeam', JSON.stringify(this.state.eliminationTeam))
             localStorage.setItem('semiEliminationWinningTeam', JSON.stringify(this.state.winningTeam))
+            this.checkEndSemi()
         })
     }
 
@@ -70,11 +94,20 @@ class Semifinal extends React.Component{
         }
 
         let showCounter;
-        if(this.state.eliminationRound === false){
-            showCounter = <Counter matchUp={this.state.matchUp} winningTeam={(data)=>{this.winningTeam(data)}}/>
+        if(this.state.startSemi === false){
+            showCounter =   <Fragment>
+                                <h4>{this.state.semiMessage}</h4>
+                            </Fragment>
         }
         else{
-            showCounter = <p> Elimination round has ended </p>
+            if(this.state.endSemi === false){
+                showCounter = <Counter matchUp={this.state.matchUp} winningTeam={(data)=>{this.winningTeam(data)}}/>
+            }
+            else{
+                showCounter =   <Fragment>
+                                    <h4>{this.state.semiMessage}</h4>
+                                </Fragment>
+            }
         }
 
 

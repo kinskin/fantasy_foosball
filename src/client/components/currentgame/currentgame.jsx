@@ -15,6 +15,7 @@ class Currentgame extends React.Component{
         this.state = {
             initialize: '',
             elimination: false,
+            startEliminationMessage: '',
             quarterFinal: false,
             semiFinal:false,
             final:false
@@ -32,8 +33,13 @@ class Currentgame extends React.Component{
     }
 
     handleElimination(){
-        this.setState({elimination:true, quarterFinal:false, semiFinal:false, final:false})
-        console.log('elimination')
+        let startElimination = JSON.parse(localStorage.getItem('startElimination'))
+        if(startElimination === null){
+            this.setState({elimination:false, quarterFinal:false, semiFinal:false, final:false, startEliminationMessage: 'You have not start the game in Elimination section in Line up'})
+        }
+        else{
+            this.setState({elimination:true, quarterFinal:false, semiFinal:false, final:false, startEliminationMessage: ''})
+        }
     }
 
     handleQuarterFinal(){
@@ -98,6 +104,9 @@ class Currentgame extends React.Component{
                 </div>
                 <div className={Style.contentBody}>
                     {renderStage}
+                </div>
+                <div className='text-center'>
+                    <h4>{this.state.startEliminationMessage}</h4>
                 </div>
             </div>
         )

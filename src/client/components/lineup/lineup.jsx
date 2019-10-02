@@ -71,15 +71,23 @@ class Lineup extends React.Component{
                 <div className={Style.contentHeader}>
                     <h1> Lineup </h1>
                 </div>
-                <div className={Style.contentBody}>
-                    <div className='d-flex flex-row justify-content-center'>
-                        <button className='btn btn-md btn-outline-dark mx-3' onClick={()=>{this.handleElimination()}}> Elimination round </button>
-                        <button className='btn btn-md btn-outline-dark mx-3' onClick={()=>{this.handleQuarterFinal()}}> Quarter Final </button>
-                        <button className='btn btn-md btn-outline-dark mx-3' onClick={()=>{this.handleSemiFinal()}}> Semi Final </button>
-                        <button className='btn btn-md btn-outline-dark mx-3' onClick={()=>{this.handleFinal()}}> Final </button>
+                <div className='row my-3'>
+                    <div className={Style.content+ ' col-6 offset-3'}>
+                        <div className={Style.contentBodyHeader} onClick={()=>{this.handleElimination()}}>
+                            <p> Elimination round </p>
+                        </div>
+                        <div className={Style.contentBodyHeader} onClick={()=>{this.handleQuarterFinal()}}>
+                            <p> Quarter Final </p>
+                        </div>
+                        <div className={Style.contentBodyHeader} onClick={()=>{this.handleSemiFinal()}}>
+                            <p> Semi Final </p>
+                        </div>
+                        <div className={Style.contentBodyHeader} onClick={()=>{this.handleFinal()}}>
+                            <p> Final </p>
+                        </div>
                     </div>
-                    {teamStage}
                 </div>
+                {teamStage}
             </div>
         )
     }
