@@ -1,6 +1,7 @@
 const {resolve, join} = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const IS_DEV = process.env.NODE_ENV !== 'production';
 
@@ -88,6 +89,10 @@ module.exports = {
           chunks: 'all'
         }
       }
+    },
+    {
+    minimize: true,
+    minimizer: [new TerserPlugin()],
     }
   },
   stats: {
