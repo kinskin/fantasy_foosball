@@ -1,4 +1,4 @@
-import React from 'React';
+import React from 'react';
 import Style from './style.scss'
 
 class Counter extends React.Component{
